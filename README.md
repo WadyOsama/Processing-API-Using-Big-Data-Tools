@@ -119,7 +119,7 @@ a1.sinks.k1.channel = c1
 
 This configuration reads data from the Kafka topic and writes it to HDFS.
 
-**Kafka to HDFS `kakfa_to_spark.conf`:**
+**Kafka to HDFS `kakfa_to_hdfs.conf`:**
 ```properties
 # Name the components on this agent
 a2.sources = r2
@@ -437,14 +437,14 @@ Follow the [InfluxDB installation guide](https://docs.influxdata.com/influxdb/cl
      cp /<your-path>/api_to_kafka.conf $FLUME_HOME/conf
      ```
      ```bash
-     cp /<your-path>/kakfa_to_spark.conf $FLUME_HOME/conf
+     cp /<your-path>/hdfs.conf $FLUME_HOME/conf
      ```
 4. **Run Both of Flume Agents**:
    ```bash
    $FLUME_HOME/bin/flume-ng agent --conf conf --conf-file $FLUME_HOME/conf/api_to_kafka.conf --name a1 -Dflume.root.logger=DEBUG,console
    ```
    ```bash
-   $FLUME_HOME/bin/flume-ng agent --conf conf --conf-file $FLUME_HOME/conf/kakfa_to_spark.conf --name a2 -Dflume.root.logger=DEBUG,console
+   $FLUME_HOME/bin/flume-ng agent --conf conf --conf-file $FLUME_HOME/conf/hdfs.conf --name a2 -Dflume.root.logger=DEBUG,console
    ```
 5. **Run the Python script to fetch data**:
    ```bash
