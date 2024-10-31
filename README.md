@@ -94,12 +94,18 @@ a1.channels = c1
 # Describe/configure the source
 a1.sources.r1.type = spooldir
 a1.sources.r1.channels = c1
-a1.sources.r1.spoolDir = /home/bigdata/api_logs	#Modify this to match your directory
+
+#Modify this to match your directory
+a1.sources.r1.spoolDir = /home/bigdata/api_logs
+
 a1.sources.r1.fileHeader = true
 
 a1.sinks.k1.channel = c1
 a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink
-a1.sinks.k1.kafka.topic = user_logs 	#Modify this to match your topic name
+
+#Modify this to match your topic name
+a1.sinks.k1.kafka.topic = user_logs
+
 a1.sinks.k1.kafka.bootstrap.servers = localhost:9092
 a1.sinks.k1.kafka.flumeBatchSize = 20
 a1.sinks.k1.kafka.producer.acks = 1
@@ -119,7 +125,7 @@ a1.sinks.k1.channel = c1
 
 This configuration reads data from the Kafka topic and writes it to HDFS.
 
-**Kafka to HDFS `kakfa_to_hdfs.conf`:**
+**Kafka to HDFS `kafka_to_hdfs.conf`:**
 ```properties
 # Name the components on this agent
 a2.sources = r2
@@ -132,12 +138,17 @@ a2.sources.r2.channels = c2
 a2.sources.r2.batchSize = 5000
 a2.sources.r2.batchDurationMillis = 2000
 a2.sources.r2.kafka.bootstrap.servers = localhost:9092
-a2.sources.r2.kafka.topics = user_logs	#Modify this to match your topic name
+
+#Modify this to match your topic name
+a2.sources.r2.kafka.topics = user_logs
 
 # Describe the sink
 a2.sinks.k2.type = hdfs
 a2.sinks.k2.channel = c2
-a2.sinks.k2.hdfs.path = /final_project #Modify this to match your desired HDFS directory
+
+#Modify this to match your desired HDFS directory
+a2.sinks.k2.hdfs.path = /final_project
+
 a2.sinks.k2.hdfs.filePrefix = events-
 a2.sinks.k2.hdfs.round = true
 a2.sinks.k2.hdfs.roundValue = 10
@@ -145,8 +156,8 @@ a2.sinks.k2.hdfs.roundUnit = minute
 
 # Use a channel which buffers events in memory
 a2.channels.c2.type = memory
-a2.channels.c2.capacity = 1000
-a2.channels.c2.transactionCapacity = 1000
+a2.channels.c2.capacity = 5000
+a2.channels.c2.transactionCapacity = 5000
 
 # Bind the source and sink to the channel
 a2.sources.r2.channels = c2
@@ -437,22 +448,26 @@ Follow the [InfluxDB installation guide](https://docs.influxdata.com/influxdb/cl
      cp /<your-path>/api_to_kafka.conf $FLUME_HOME/conf
      ```
      ```bash
-     cp /<your-path>/hdfs.conf $FLUME_HOME/conf
+     cp /<your-path>/kafka_to_hdfs.conf $FLUME_HOME/conf
      ```
 4. **Run Both of Flume Agents**:
    ```bash
    $FLUME_HOME/bin/flume-ng agent --conf conf --conf-file $FLUME_HOME/conf/api_to_kafka.conf --name a1 -Dflume.root.logger=DEBUG,console
    ```
    ```bash
-   $FLUME_HOME/bin/flume-ng agent --conf conf --conf-file $FLUME_HOME/conf/hdfs.conf --name a2 -Dflume.root.logger=DEBUG,console
+   $FLUME_HOME/bin/flume-ng agent --conf conf --conf-file $FLUME_HOME/conf/kafka_to_hdfs.conf --name a2 -Dflume.root.logger=DEBUG,console
    ```
 5. **Run the Python script to fetch data**:
    ```bash
    python3 /<your-path>/connection_script.py
    ```
-6. **Run the Python script to fetch data**:
+6. **Submit the Spark job**:
+   
+   	**Note that you must have the needed packages to connect to Kafka from Spark.**
+   
+   	**You also must change the numbers in this command to match your versions of Kafka and Sprak**
    ```bash
-   python3 /<your-path>/pyspark_influx.py
+   spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.1 pyspark_influx.py 
    ```
 6. **Verify data in InfluxDB Cloud**:
    Check your InfluxDB Cloud dashboard to ensure data is being written to your specified bucket.
@@ -481,4 +496,4 @@ This project successfully establishes a real-time data pipeline using Flume, Kaf
 
 - [RandomUser API](https://randomuser.me/) for providing the data generation API.
 - Apache Foundation for developing Flume, Kafka, Spark, and Hadoop.
-- InfluxDB Cloud for their powerful cloud-based data storage and processing tools.
+- InfluxDB Cloud for its powerful cloud-based data storage and processing tools.
