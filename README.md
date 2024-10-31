@@ -25,7 +25,7 @@ This project demonstrates a data engineering pipeline designed on CentOS 6.5 wit
 ## Prerequisites
 
 - **Virtual Machine**: CentOS 6.5 (or any compatible machine depending on your setup)
-- **Hadoop and HDFS**: For distributed storage
+- **Hadoop**: For distributed storage
 - **Apache Flume**: For data ingestion
 - **Apache Kafka**: For data streaming
 - **Apache Spark**: For real-time data processing
